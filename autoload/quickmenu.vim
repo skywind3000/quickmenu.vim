@@ -399,7 +399,7 @@ function! s:select_by_ft(mid, ft) abort
 	endif
 	let lastmode = 2
 	for item in get(s:quickmenu_items, a:mid, [])
-		if len(item.ft) && index(item.ft, a:ft) >= 0
+		if len(item.ft) && index(item.ft, a:ft) < 0
 			continue
 		endif
 		if item.mode == 2 && lastmode != 2 
