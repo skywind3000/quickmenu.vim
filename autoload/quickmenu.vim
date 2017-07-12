@@ -111,8 +111,9 @@ function! quickmenu#reset()
 endfunc
 
 function! quickmenu#append(text, event, ...)
-	let filetype = (a:0 >= 1)? a:1 : ''
-	let weight = (a:0 >= 2)? a:2 : 0
+	let help = (a:0 >= 1)? a:1 : ''
+	let filetype = (a:0 >= 2)? a:2 : ''
+	let weight = (a:0 >= 3)? a:3 : 0
 	let item = {}
 	let item.mode = 0
 	let item.event = a:event
@@ -120,6 +121,7 @@ function! quickmenu#append(text, event, ...)
 	let item.key = ''
 	let item.ft = []
 	let item.weight = weight
+	let item.help = help
 	if a:event != ''
 		let item.mode = 0
 	elseif a:text[0] != '#'
@@ -280,10 +282,12 @@ function! s:setup_keymaps(items)
 	if s:quickmenu_line > 0
 		call cursor(s:quickmenu_line, 1)
 	endif
+	let b:quickmenu.showhelp = 0
 	call s:set_cursor()
 	augroup quickmenu
 		autocmd CursorMoved <buffer> call s:set_cursor()
 	augroup END
+	let b:quickmenu.showhelp = (stridx(g:quickmenu_options, 'H') >= 0)? 1 : 0
 endfunc
 
 
@@ -329,6 +333,17 @@ function! s:set_cursor() abort
 	endif
 	let s:quickmenu_line = find + 2
 	call cursor(s:quickmenu_line, len(g:quickmenu_padding_left) + 2)
+	if b:quickmenu.showhelp
+		let help = b:quickmenu.items[find].help
+		let key = b:quickmenu.items[find].key
+		echohl QuickmenuHelp
+		if help != ''
+			call s:cmdmsg('['.key.']: '.help, 'QuickmenuHelp')
+		else
+			echo ''
+		endif
+		echohl None
+	endif
 endfunc
 
 
@@ -376,10 +391,10 @@ function! s:select_by_ft(mid, ft) abort
 	let index = 0
 	let header = get(s:quickmenu_header, a:mid, s:quickmenu_version)
 	if header != ''
-		let ni = {'mode':3, 'text':'', 'event':''}
+		let ni = {'mode':3, 'text':'', 'event':'', 'help':''}
 		let ni.text = header
 		let items += [ni]
-		let ni = {'mode':1, 'text':'', 'event':''}
+		let ni = {'mode':1, 'text':'', 'event':'', 'help':''}
 		let items += [ni]
 	endif
 	let lastmode = 2
@@ -408,7 +423,7 @@ function! s:select_by_ft(mid, ft) abort
 		endif
 	endfor
 	if len(items)
-		let item = {'mode':1, 'text':'', 'event':''}
+		let item = {'mode':1, 'text':'', 'event':'', 'help':''}
 		let items += [item]
 	endif
 	let item = {}
@@ -416,6 +431,7 @@ function! s:select_by_ft(mid, ft) abort
 	let item.text = '<close>'
 	let item.event = 'close'
 	let item.key = '0'
+	let item.help = ''
 	let items += [item]
 	return items
 endfunc
@@ -427,7 +443,11 @@ endfunc
 function! s:menu_expand(item) abort
 	let items = []
 	let text = s:expand_text(a:item.text)
+	let help = ''
 	let index = 0
+	if a:item.mode == 0
+		let help = s:expand_text(get(a:item, 'help', ''))
+	endif
 	for curline in split(text, "\n", 1)
 		let item = {}
 		let item.mode = a:item.mode
@@ -440,6 +460,7 @@ function! s:menu_expand(item) abort
 				let index += 1
 				let item.key = a:item.key
 				let item.event = a:item.event
+				let item.help = help
 			else
 				let item.text = '     '.curline
 			endif
@@ -486,6 +507,37 @@ function! s:expand_text(string) abort
 endfunc
 
 
+"----------------------------------------------------------------------
+" show cmd message
+"----------------------------------------------------------------------
+function! s:cmdmsg(content, highlight)
+	let saveshow = &showmode
+	set noshowmode
+    let wincols = &columns
+    let allowedheight = &lines/5
+    let statusline = (&laststatus==1 && winnr('$')>1) || (&laststatus==2)
+    let reqspaces_lastline = (statusline || !&ruler) ? 12 : 29
+    let width = len(a:content)
+    let limit = wincols - reqspaces_lastline
+	let allowedheight = &cmdheight
+	let l:content = a:content
+	if width + 1 > limit
+		let l:content = strpart(l:content, 0, limit - 1)
+		let width = len(l:content)
+	endif
+	if a:highlight != ''
+		exec "echohl ". a:highlight
+		echo l:content
+		echohl NONE
+	else
+		echo l:content
+	endif
+	if saveshow != 0
+		set showmode
+	endif
+endfunc
+
+
 
 "----------------------------------------------------------------------
 " testing case
@@ -493,8 +545,8 @@ endfunc
 if 0
 	call quickmenu#reset()
 	call quickmenu#append('# Start', '')
-	call quickmenu#append('test1', 'echo 1')
-	call quickmenu#append('test2', 'echo 2')
+	call quickmenu#append('test1', 'echo 1', 'help 1')
+	call quickmenu#append('test2', 'echo 2', 'help 2')
 
 	call quickmenu#append('# Misc', '')
 	call quickmenu#append('test3', 'echo 3')

@@ -65,5 +65,5 @@ HighLink	QuickmenuNumber			Number		StartifyNumber
 HighLink	QuickmenuSpecial		Comment		StartifySpecial
 HighLink	QuickmenuHeader			Title		StartifyHeader
 HighLink	QuickmenuOption			Identifier  StartifyFile
-
+HighLink	QuickmenuHelp			Comment 	StartifySpecial	
 
