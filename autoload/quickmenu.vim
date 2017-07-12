@@ -408,7 +408,8 @@ function! s:select_by_ft(mid, ft) abort
 			let items += [ni]
 		endif
 		let lastmode = item.mode
-		if item.mode == 0
+		" allocate key for non-filetype specific items
+		if item.mode == 0 && len(item.ft) == 0
 			let item.key = hint[index]
 			let index += 1
 			if index >= strlen(hint)
@@ -420,6 +421,16 @@ function! s:select_by_ft(mid, ft) abort
 			" insert empty line
 			let ni = {'mode':1, 'text':'', 'event':''}
 			let items += [ni]
+		endif
+	endfor
+	" allocate key for filetype specific items
+	for item in items
+		if item.mode == 0 && len(item.ft) > 0
+			let item.key = hint[index]
+			let index += 1
+			if index >= strlen(hint)
+				let index = strlen(hint) - 1
+			endif
 		endif
 	endfor
 	if len(items)
