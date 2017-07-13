@@ -56,7 +56,7 @@ call g:quickmenu#reset()
 noremap <silent><F12> :call quickmenu#toggle(0)<cr>
 
 
-" section 1
+" section 1, text starting with "#" represents a section (see the screen capture below)
 call g:quickmenu#append('# Develop', '')
 
 call g:quickmenu#append('item 1.1', 'echo "1.1 selected"', 'select item 1.1')
@@ -64,7 +64,6 @@ call g:quickmenu#append('item 1.2', 'echo "1.2 selected"', 'select item 1.2')
 call g:quickmenu#append('item 1.3', 'echo "1.3 selected"', 'select item 1.3')
 
 " section 2
-
 call g:quickmenu#append('# Misc', '')
 
 call g:quickmenu#append('item 2.1', 'echo "2.1 selected"', 'select item 2.1')
@@ -73,9 +72,11 @@ call g:quickmenu#append('item 2.3', 'echo "2.3 selected"', 'select item 2.3')
 call g:quickmenu#append('item 2.4', 'echo "2.4 selected"', 'select item 2.4')
 ```
 
-And now quickmenu is ready:
+And then quickmenu is ready:
 
 ![](http://skywind3000.github.io/word/images/menu/menu-1.gif)
+
+Now we have this cute menu and show/hide it with F12. and no longer have to be afraid for forgetting keymaps.
 
 
 ## Documentation
@@ -90,7 +91,7 @@ function quickmenu#append(text, action [, help = ''])
 - `action` is a piece of vimscript to be executed when a item is selected.
 - `help` will display in the cmdline if g:quickmenu_options contains `H`.
 
-Item will be treated as "static text" (unselectable) If `action` is empty. `text` starts with "#" represent a new section.
+Item will be treated as "static text" (unselectable) If `action` is empty. `text` starting with "#" represents a new section.
 
 Note that, script evaluation of `%{...}` is happened **before** quickmenu open, you can get  information from current document and display them in the menu, like current filename or word under cursor.
 
