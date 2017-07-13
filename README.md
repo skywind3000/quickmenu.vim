@@ -12,7 +12,7 @@ There are many keymaps defined in my `.vimrc`. Tired to check my `.vimrc` again 
 
 Just see this GIF demonstration below:
 
-![](http://skywind3000.github.io/word/images/menu/menu-2.gif)
+![](http://skywind3000.github.io/word/images/menu/menu-5.gif)
 
 Trying to share my configuration to my friends, I found that they did't have patience to remember all the keymaps in my vimrc, but a quickmenu is quite accaptable for them. 
 
@@ -59,22 +59,22 @@ noremap <silent><F12> :call quickmenu#toggle(0)<cr>
 " section 1, text starting with "#" represents a section (see the screen capture below)
 call g:quickmenu#append('# Develop', '')
 
-call g:quickmenu#append('item 1.1', 'echo "1.1 selected"', 'select item 1.1')
-call g:quickmenu#append('item 1.2', 'echo "1.2 selected"', 'select item 1.2')
-call g:quickmenu#append('item 1.3', 'echo "1.3 selected"', 'select item 1.3')
+call g:quickmenu#append('item 1.1', 'echo "1.1 is selected"', 'select item 1.1')
+call g:quickmenu#append('item 1.2', 'echo "1.2 is selected"', 'select item 1.2')
+call g:quickmenu#append('item 1.3', 'echo "1.3 is selected"', 'select item 1.3')
 
 " section 2
 call g:quickmenu#append('# Misc', '')
 
-call g:quickmenu#append('item 2.1', 'echo "2.1 selected"', 'select item 2.1')
-call g:quickmenu#append('item 2.2', 'echo "2.2 selected"', 'select item 2.2')
-call g:quickmenu#append('item 2.3', 'echo "2.3 selected"', 'select item 2.3')
-call g:quickmenu#append('item 2.4', 'echo "2.4 selected"', 'select item 2.4')
+call g:quickmenu#append('item 2.1', 'echo "2.1 is selected"', 'select item 2.1')
+call g:quickmenu#append('item 2.2', 'echo "2.2 is selected"', 'select item 2.2')
+call g:quickmenu#append('item 2.3', 'echo "2.3 is selected"', 'select item 2.3')
+call g:quickmenu#append('item 2.4', 'echo "2.4 is selected"', 'select item 2.4')
 ```
 
 And then quickmenu is ready:
 
-![](http://skywind3000.github.io/word/images/menu/menu-1.gif)
+![](http://skywind3000.github.io/word/images/menu/menu-6.gif)
 
 Vim is lack of basic ui components, that's ok for experienced users, but hard for the others. A quickmenu is quite easier for them. Now we have this cute menu and show/hide it with F12. and no longer have to worry about  forgetting keymaps.
 
@@ -134,6 +134,70 @@ function quickmenu#current(menuid)
 
 If current menu changed (which is 0 by default), `quickmenu#append()` will insert new items into the new menu and `quickmenu#reset()` will clear items in it either.
 
+## Options
+
+#### g:quickmenu_padding_left (integer)
+
+Left padding size of the quickmenu window
+
+```VimL
+default = 3
+```
+
+Set it to 2 or 1 if you are running vim in a small window, so quickmenu will not occupy much space.
+
+#### g:quickmenu_padding_right (integer)
+
+Right padding size of the quickmenu window
+
+```VimL
+default = 3
+```
+
+Set it to 2 or 1 if you are running vim in a small window, so quickmenu will not occupy much space.
+
+#### quickmenu_max_width (integer)
+
+Max quickmenu window size
+
+```VimL
+default = 40
+```
+
+Window width of quickmenu is adaptive to the content of items. This control the max value of the window size.
+
+#### g:quickmenu_disable_nofile (integer)
+
+Quickmenu will not popup if `buftype` is "nofile" when set it to 1
+
+```VimL
+default = 1
+```
+
+Prevent quickmenu accidently popup in some non-file window like: quickfix, location list or tagbar, etc. whose `buftype` has been set to "nofile".
+
+
+#### g:quickmenu_ft_blacklist (list)
+
+Quickmenu will not popup if current `filetype` matchs the blacklist.
+
+```VimL
+default = ['netrw', 'nerdtree', 'startify']
+```
+
+It is not enough to use `g:quickmenu_disable_nofile` to detect non-file buffers, some plugins like netrw forgot to set their `buftype` to "nofile".
+
+#### g:quickmenu_options (string)
+
+Quickmenu gui options
+
+```VimL
+default = ''
+```
+
+The available options are `"H"` (show help in the cmdline) and `"L"` (show cursorline).
+
+
 
 ## Example
 
@@ -177,6 +241,11 @@ call quickmenu#append("Turn spell %{&spell? 'off':'on'}", "set spell!", "enable/
 call quickmenu#append("Function List", "TagbarToggle", "Switch Tagbar on/off")
 
 ```
+
+## History
+
+- 1.1.13 (2017-07-14): New option to set default left/right padding size, useful when running vim in a small window.
+- 1.1.12 (2017-07-13): Initial commit.
 
 ## Credits
 

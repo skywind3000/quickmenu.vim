@@ -1,7 +1,7 @@
 if exists('b:current_syntax')
 endif
 
-let s:padding_left = get(g:, 'quickmenu_padding_left', '   ')
+let s:padding_left = repeat(' ', get(g:, 'quickmenu_padding_left', 3))
 
 syntax sync fromstart
 

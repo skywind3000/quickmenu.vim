@@ -24,10 +24,11 @@ if !exists('g:quickmenu_ft_blacklist')
 endif
 
 if !exists('g:quickmenu_padding_left')
-	let g:quickmenu_padding_left = '   '
+	let g:quickmenu_padding_left = 3
 endif
 
-if !exists('g:quickmenu_header')
+if !exists('g:quickmenu_padding_right')
+	let g:quickmenu_padding_right = 3
 endif
 
 if !exists('g:quickmenu_options')
@@ -41,7 +42,7 @@ endif
 let s:quickmenu_items = {}
 let s:quickmenu_mid = 0
 let s:quickmenu_header = {}
-let s:quickmenu_version = 'QuickMenu 1.1.12'
+let s:quickmenu_version = 'QuickMenu 1.1.13'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
 
@@ -208,7 +209,7 @@ function! quickmenu#toggle(mid) abort
 		let content += hr
 	endfor
 	
-	let maxsize += len(g:quickmenu_padding_left) + 1
+	let maxsize += g:quickmenu_padding_right
 
 	if 1
 		call s:window_open(maxsize)
@@ -233,7 +234,7 @@ function! s:window_render(items) abort
 	setlocal modifiable
 	let ln = 2
 	let b:quickmenu = {}
-	let b:quickmenu.padding_size = strlen(g:quickmenu_padding_left)
+	let b:quickmenu.padding_size = g:quickmenu_padding_left
 	let b:quickmenu.option_lines = []
 	let b:quickmenu.section_lines = []
 	let b:quickmenu.text_lines = []
@@ -332,7 +333,7 @@ function! s:set_cursor() abort
 		return 
 	endif
 	let s:quickmenu_line = find + 2
-	call cursor(s:quickmenu_line, len(g:quickmenu_padding_left) + 2)
+	call cursor(s:quickmenu_line, g:quickmenu_padding_left + 2)
 	if b:quickmenu.showhelp
 		let help = b:quickmenu.items[find].help
 		let key = b:quickmenu.items[find].key
@@ -456,6 +457,7 @@ function! s:menu_expand(item) abort
 	let text = s:expand_text(a:item.text)
 	let help = ''
 	let index = 0
+	let padding = repeat(' ', g:quickmenu_padding_left)
 	if a:item.mode == 0
 		let help = s:expand_text(get(a:item, 'help', ''))
 	endif
@@ -477,7 +479,7 @@ function! s:menu_expand(item) abort
 			endif
 		endif
 		if len(item.text)
-			let item.text = g:quickmenu_padding_left . item.text
+			let item.text = padding . item.text
 		endif
 		let items += [item]
 	endfor
