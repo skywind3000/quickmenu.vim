@@ -385,7 +385,7 @@ endfunc
 " select items by &ft, generate keymap and add some default items
 "----------------------------------------------------------------------
 function! s:select_by_ft(mid, ft) abort
-	let hint = '123456789abcdefhlmnoprstuvwxyz*'
+	let hint = '123456789abcdefhlmnoprstuvwxyzACDIOPQRSUX*'
 	" let hint = '12abcdefhlmnoprstuvwxyz*'
 	let items = []
 	let index = 0
@@ -522,8 +522,6 @@ endfunc
 " show cmd message
 "----------------------------------------------------------------------
 function! s:cmdmsg(content, highlight)
-	let saveshow = &showmode
-	set noshowmode
     let wincols = &columns
     let allowedheight = &lines/5
     let statusline = (&laststatus==1 && winnr('$')>1) || (&laststatus==2)
@@ -542,9 +540,6 @@ function! s:cmdmsg(content, highlight)
 		echohl NONE
 	else
 		echo l:content
-	endif
-	if saveshow != 0
-		set showmode
 	endif
 endfunc
 
