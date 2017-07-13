@@ -7,7 +7,7 @@ There are many keymaps defined in my `.vimrc`. Tired to check my `.vimrc` again 
 - Press `<Enter>` or `1` to `9` to select an item.
 - `Help` details will display in the cmdline when you are moving around the cursor.
 - Items can be filtered by `filetype`, different items for different filetypes.
-- Macros in `%{...}` form from `text` and `help` will be evaluated and expanded.
+- Scripts in the `%{...}` form from `text` and `help` will be evaluated and expanded.
 - No longer have to be afraid for forgetting keymaps.
 
 Just see this GIF demonstration below:
