@@ -76,7 +76,7 @@ And then quickmenu is ready:
 
 ![](http://skywind3000.github.io/word/images/menu/menu-1.gif)
 
-Vim is lack of ui components, that's ok for experienced users, but hard for the others. A quickmenu is quite easier for them. Now we have this cute menu and show/hide it with F12. and no longer have to worry about  forgetting keymaps.
+Vim is lack of basic ui components, that's ok for experienced users, but hard for the others. A quickmenu is quite easier for them. Now we have this cute menu and show/hide it with F12. and no longer have to worry about  forgetting keymaps.
 
 
 ## Documentation
