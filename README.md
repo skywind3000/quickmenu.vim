@@ -76,7 +76,7 @@ And then quickmenu is ready:
 
 ![](http://skywind3000.github.io/word/images/menu/menu-1.gif)
 
-Vim is lack of ui components, that's ok for experienced user, but hard for the others. A quickmenu is quite easier for them. Now we have this cute menu and show/hide it with F12. and no longer have to worry about  forgetting keymaps.
+Vim is lack of ui components, that's ok for experienced users, but hard for the others. A quickmenu is quite easier for them. Now we have this cute menu and show/hide it with F12. and no longer have to worry about  forgetting keymaps.
 
 
 ## Documentation
@@ -99,7 +99,7 @@ Note that, script evaluation of `%{...}` is happened **before** quickmenu open, 
 
 And `action` will be executed **after** quickmenu closed. All the `action` will affect current document (not the quickmenu window).
 
-If you want your item enabled for C/C++ set the parameter of `ft` to "c,cpp,objc,objcpp", otherwise you can leave it as an empty string.
+If you want your item enabled for C/C++ set the parameter of `ft` to "c,cpp,objc,objcpp", otherwise just leave it empty.
 
 #### Clear items
 
