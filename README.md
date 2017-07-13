@@ -175,7 +175,7 @@ call quickmenu#append("Function List", "TagbarToggle", "Switch Tagbar on/off")
 
 ```
 
-## Credit
+## Credits
 
 Thanks to [vim-startify](https://github.com/mhinz/vim-startify), quickmenu uses its syntax and some idea. 
 
