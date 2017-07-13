@@ -14,7 +14,7 @@ Just see this GIF demonstration below:
 
 ![](http://skywind3000.github.io/word/images/menu/menu-2.gif)
 
-Trying to share my configuration to my friends, I found that they did't have patience to remember all the keymaps in my vimrc, but a quickmenu is quite accaptable for them. Vim is lack of ui components, that's ok for experienced user, but hard for the others, but a quickmenu is easier for them.
+Trying to share my configuration to my friends, I found that they did't have patience to remember all the keymaps in my vimrc, but a quickmenu is quite accaptable for them. 
 
 
 ## Install
@@ -76,10 +76,11 @@ And then quickmenu is ready:
 
 ![](http://skywind3000.github.io/word/images/menu/menu-1.gif)
 
-Now we have this cute menu and show/hide it with F12. and no longer have to be afraid for forgetting keymaps.
+Vim is lack of ui components, that's ok for experienced user, but hard for the others. A quickmenu is quite easier for them. Now we have this cute menu and show/hide it with F12. and no longer have to worry about  forgetting keymaps.
 
 
 ## Documentation
+
 
 #### Add new items into menu
 
