@@ -41,7 +41,7 @@ function quickmenu#append(text, action [, help = ''])
 - `action` is a piece of vimscript to be executed when a item is selected.
 - `help` will display in the cmdline if g:quickmenu_options contains `H`.
 
-Item will be treated as "static text" (unselectable) If `action` is empty. `text` starting with "#" represents a new section.
+A item will be treated as "static text" (unselectable) If `action` is empty. `text` starting with "#" represents a new section.
 
 Example for `.vimrc`:
 
@@ -92,7 +92,7 @@ function quickmenu#append(text, action [, help = ''])
 - `action` is a piece of vimscript to be executed when a item is selected.
 - `help` will display in the cmdline if g:quickmenu_options contains `H`.
 
-Item will be treated as "static text" (unselectable) If `action` is empty. `text` starting with "#" represents a new section.
+A item will be treated as "static text" (unselectable) If `action` is empty. `text` starting with "#" represents a new section.
 
 Note that, script evaluation of `%{...}` is happened **before** quickmenu open, you can get  information from current document and display them in the menu, like current filename or word under cursor.
 
