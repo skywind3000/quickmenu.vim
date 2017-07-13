@@ -5,7 +5,7 @@ There are many keymaps defined in my `.vimrc`. Tired to check my `.vimrc` again 
 - Well formatted and carefully colored to ensure neat and handy.
 - Press `<F12>` to popup `quickmenu` on the right, use `j` and `k` to move up and down.
 - Press `<Enter>` or `1` to `9` to select an item.
-- `Help` details will display in the cmdline when you are moving around the cursor.
+- `Help` details will display in the cmdline when you are moving the cursor around.
 - Items can be filtered by `filetype`, different items for different filetypes.
 - Scripts in the `%{...}` form from `text` and `help` will be evaluated and expanded.
 - No longer have to be afraid for forgetting keymaps.
