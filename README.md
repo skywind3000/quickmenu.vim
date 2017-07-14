@@ -1,6 +1,6 @@
 ## Preface
 
-There are many keymaps defined in my `.vimrc`. Tired to check my `.vimrc` again and again when I forget some, so I made this `quickmenu` plugin which can be fully customized:
+There are many keymaps defined in my `.vimrc`. Getting tired to check my `.vimrc` again and again when I forget some, so I made this `quickmenu` plugin which can be fully customized:
 
 - Well formatted and carefully colored to ensure neat and handy.
 - Press `<F12>` to popup `quickmenu` on the right, use `j` and `k` to move up and down.
@@ -241,6 +241,12 @@ call quickmenu#append("Turn spell %{&spell? 'off':'on'}", "set spell!", "enable/
 call quickmenu#append("Function List", "TagbarToggle", "Switch Tagbar on/off")
 
 ```
+
+## More
+
+UltiSnips is great, but remembering all the snipet's names is really painful. There are more nearly 130+ snippets for C++ in UltiSnips's database, but I can remember only three of them. 
+
+Using quickmenu to select snippets is much easier for me than using UltiSnips directly, I am going to wrote a wiki page about it.
 
 ## History
 

@@ -3,7 +3,7 @@
 " quickmenu.vim - 
 "
 " Created by skywind on 2017/07/08
-" Last change: 2017/07/08 23:18:45
+" Last change: 2017-07-14 17:29
 "
 "======================================================================
 
@@ -42,7 +42,7 @@ endif
 let s:quickmenu_items = {}
 let s:quickmenu_mid = 0
 let s:quickmenu_header = {}
-let s:quickmenu_version = 'QuickMenu 1.1.13'
+let s:quickmenu_version = 'QuickMenu 1.1.14'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
 
@@ -94,9 +94,18 @@ function! s:window_open(size)
 		return 0
 	endif
 	setlocal buftype=nofile bufhidden=wipe nobuflisted nomodifiable
-	setlocal noshowcmd noswapfile nowrap nonumber signcolumn=no nospell
-	setlocal fdc=0 nolist colorcolumn= nocursorline nocursorcolumn
+	setlocal noshowcmd noswapfile nowrap nonumber
+	setlocal nolist colorcolumn= nocursorline nocursorcolumn
 	setlocal noswapfile norelativenumber
+	if has('signs') && has('patch-7.4.2210')
+		setlocal signcolumn=no 
+	endif
+	if has('spell')
+		setlocal nospell
+	endif
+	if has('folding')
+		setlocal fdc=0
+	endif
 	let s:quickmenu_bid = bufnr('%')
 	return 1
 endfunc
@@ -496,21 +505,21 @@ function! s:expand_text(string) abort
 	while 1
 		let pos = stridx(a:string, '%{', index)
 		if pos < 0
-			let partial += [a:string[index:]]
+			let partial += [strpart(a:string, index)]
 			break
 		endif
 		let head = ''
 		if pos > index
-			let partial += [a:string[index:pos - 1]]
+			let partial += [strpart(a:string, index, pos - index)]
 		endif
 		let endup = stridx(a:string, '}', pos + 2)
 		if endup < 0
-			let partial += [a:string[index:]]
+			let partial += [strpart(a:stirng, index)]
 			break
 		endif
 		let index = endup + 1
 		if endup > pos + 2
-			let script = a:string[pos + 2:endup - 1]
+			let script = strpart(a:string, pos + 2, endup - (pos + 2))
 			let script = substitute(script, '^\s*\(.\{-}\)\s*$', '\1', '')
 			let result = eval(script)
 			let partial += [result]
