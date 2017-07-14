@@ -42,7 +42,7 @@ endif
 let s:quickmenu_items = {}
 let s:quickmenu_mid = 0
 let s:quickmenu_header = {}
-let s:quickmenu_version = 'QuickMenu 1.1.14'
+let s:quickmenu_version = 'QuickMenu 1.1.15'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
 
@@ -89,7 +89,11 @@ function! s:window_open(size)
 		endif
 	endif
 	let savebid = bufnr('%')
-	exec "silent! ".size.'vne '.s:quickmenu_name
+	if stridx(g:quickmenu_options, 'T') < 0
+		exec "silent! rightbelow ".size.'vne '.s:quickmenu_name
+	else
+		exec "silent! leftabove ".size.'vne '.s:quickmenu_name
+	endif
 	if savebid == bufnr('%')
 		return 0
 	endif
@@ -296,6 +300,7 @@ function! s:setup_keymaps(items)
 	call s:set_cursor()
 	augroup quickmenu
 		autocmd CursorMoved <buffer> call s:set_cursor()
+		autocmd InsertEnter <buffer> call feedkeys("\<ESC>")
 	augroup END
 	let b:quickmenu.showhelp = (stridx(g:quickmenu_options, 'H') >= 0)? 1 : 0
 endfunc

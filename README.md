@@ -189,13 +189,13 @@ It is not enough to use `g:quickmenu_disable_nofile` to detect non-file buffers,
 
 #### g:quickmenu_options (string)
 
-Quickmenu gui options
+Quickmenu gui options, each character represents a feature.
 
 ```VimL
 default = ''
 ```
 
-The available options are `"H"` (show help in the cmdline) and `"L"` (show cursorline).
+The available options are `"H"` (show help in the cmdline), `"L"` (show cursorline) and `"T"` (open on the left).
 
 
 
@@ -250,6 +250,7 @@ Using quickmenu to select snippets is much easier for me than using UltiSnips di
 
 ## History
 
+- 1.1.15 (2017-07-15): fixed: quickmenu will popup on the left if `nosplitright` is set. 
 - 1.1.14 (2017-07-14): fixed: incompatible with vim before 7.4.2202
 - 1.1.13 (2017-07-14): New option to set default left/right padding size, useful when running vim in a small window.
 - 1.1.12 (2017-07-13): Initial commit.
