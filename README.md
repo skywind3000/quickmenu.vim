@@ -250,7 +250,7 @@ Using quickmenu to select snippets is much easier for me than using UltiSnips di
 
 ## History
 
-- 1.1.15 (2017-07-15): fixed: quickmenu will popup on the left if `nosplitright` is set. 
+- 1.1.15 (2017-07-15): fixed: quickmenu will always popup on the right, no matter `splitright` is set or unset.
 - 1.1.14 (2017-07-14): fixed: incompatible with vim before 7.4.2202
 - 1.1.13 (2017-07-14): New option to set default left/right padding size, useful when running vim in a small window.
 - 1.1.12 (2017-07-13): Initial commit.
