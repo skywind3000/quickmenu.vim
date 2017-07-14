@@ -246,7 +246,7 @@ call quickmenu#append("Function List", "TagbarToggle", "Switch Tagbar on/off")
 
 UltiSnips is great, but remembering all the snipet's names is really painful. There are more nearly 130+ snippets for C++ in UltiSnips's database, but I can remember only three of them. 
 
-Using quickmenu to select snippets is much easier for me than using UltiSnips directly, I am going to wrote a wiki page about it.
+Using quickmenu to select snippets is much easier for me than using UltiSnips directly, I am going to write a wiki page about it.
 
 ## History
 
