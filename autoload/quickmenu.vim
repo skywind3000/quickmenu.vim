@@ -3,7 +3,7 @@
 " quickmenu.vim - 
 "
 " Created by skywind on 2017/07/08
-" Last change: 2017-07-14 17:29
+" Last change: 2017-07-16 03:14
 "
 "======================================================================
 
@@ -42,7 +42,7 @@ endif
 let s:quickmenu_items = {}
 let s:quickmenu_mid = 0
 let s:quickmenu_header = {}
-let s:quickmenu_version = 'QuickMenu 1.1.16'
+let s:quickmenu_version = 'QuickMenu 1.2.0'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
 
@@ -184,7 +184,6 @@ function! quickmenu#list()
 endfunc
 
 
-
 "----------------------------------------------------------------------
 " quickmenu interface
 "----------------------------------------------------------------------
@@ -215,7 +214,7 @@ function! quickmenu#toggle(mid) abort
 		let hr = s:menu_expand(item)
 		for outline in hr
 			let text = outline['text']
-			if strlen(text) > maxsize
+			if strdisplaywidth(text) > maxsize
 				let maxsize = strdisplaywidth(text)
 			endif
 		endfor
@@ -391,7 +390,12 @@ function! <SID>quickmenu_execute(index) abort
 	close!
 	redraw
 	if item.key != '0'
-		exec item.event
+		let script = item.event
+		if script[0] != '='
+			exec script
+		else
+			let script = matchstr(script, '^=\s*\zs.*')
+		endif
 	endif
 endfunc
 
@@ -594,6 +598,175 @@ function! s:cmdmsg(content, highlight)
 endfunc
 
 
+"----------------------------------------------------------------------
+" echo a error msg
+"----------------------------------------------------------------------
+function! s:errmsg(msg)
+	echohl ErrorMsg
+	echo a:msg
+	echohl None
+endfunc
+
+
+"----------------------------------------------------------------------
+" echo highlight
+"----------------------------------------------------------------------
+function! s:highlight(standard, startify)
+	exec "echohl ". (hlexists(a:startify)? a:startify : a:standard)
+endfunc
+
+
+"----------------------------------------------------------------------
+" bottom up 
+"----------------------------------------------------------------------
+function! quickmenu#bottom(mid)
+	if g:quickmenu_disable_nofile
+		if &buftype == 'nofile' || &buftype == 'quickfix'
+			return ""
+		endif
+		if &modifiable == 0
+			if index(g:quickmenu_ft_blacklist, &ft) >= 0
+				return ""
+			endif
+		endif
+	endif
+
+	if &columns < (g:quickmenu_padding_left + 25)
+		return ""
+	endif
+
+	let items = []
+	let keymap = {}
+	let maxsize = 4
+	let header = get(s:quickmenu_header, a:mid, s:quickmenu_version)
+	let header = (header == '')? s:quickmenu_version : header
+
+	" select and arrange menu
+	for item in s:select_by_ft(a:mid, &ft)
+		if item.mode == 0
+			if item.key != '0' && item.key != '*'
+				let ni = deepcopy(item)
+				let ni.text = s:expand_text(item.text)
+				let ni.help = s:expand_text(item.help)
+				let ni.text = substitute(ni.text, '[\n\t]', ' ', 'g')
+				let ni.help = substitute(ni.help, '[\n\t]', ' ', 'g')
+				let items += [ni]
+				let keymap[ni.key] = ni
+				if strdisplaywidth(ni.text) > maxsize
+					let maxsize = strdisplaywidth(ni.text)
+				endif
+			endif
+		endif
+	endfor
+
+	" exit when items is empty
+	if empty(items)
+		return ""
+	endif
+
+	" normalize size
+	for item in items
+		let ds = strdisplaywidth(item.text)
+		if ds < maxsize
+			let item.text = item.text . repeat(' ', maxsize - ds)
+		endif
+	endfor
+
+	" loop menu
+	let c = s:bottom_popup(items, header)
+
+	" remove alt and convert to char
+	if has('nvim')
+		let cc = (type(c) != 0)?  split(c, '.\zs')[-1] : nr2char(c)
+	else
+		let cc = (type(c) == 0 && c > 127)? nr2char(c - 128) : nr2char(c)
+	endif
+
+	let item = get(keymap, cc, {})
+
+	if empty(item)
+		return ""
+	endif
+
+	if item.event[0] != '='
+		exec item.event
+	else
+		let script = matchstr(item.event, '^=\zs.*')
+		return script
+	endif
+
+	return ""
+endfunc
+
+
+"----------------------------------------------------------------------
+" render menu at cmdline
+"----------------------------------------------------------------------
+function! s:bottom_render(items, header)
+	echo ""
+	let &cmdheight = len(a:items) + 2
+	let maxcount = &cmdheight - 2
+	let maxcount = (maxcount < len(a:items))? maxcount : len(a:items)
+	let columns = &columns - 2
+	let padding = repeat(' ', g:quickmenu_padding_left)
+	let header = padding . a:header . ':'
+	let header = s:slimit(header, columns - 29, 0)
+	let start = g:quickmenu_padding_left + 7
+	call s:highlight('Statement', 'StartifySection')
+	echon header. "\n"
+	for index in range(maxcount)
+		let item = a:items[index]
+		call s:highlight('Delimiter', 'StartifyBracket')
+		echon padding. "  ["
+		call s:highlight('Number', 'StartifyNumber')
+		echon item.key
+		call s:highlight('Delimiter', 'StartifyBracket')
+		echon "]  "
+		call s:highlight('Identifier', 'StartifyFile')
+		let text = s:slimit(item.text, columns - start, start)
+		echon text
+		let next = start + strdisplaywidth(text)
+		let help = (item.help != '')? item.help : item.event
+		if next < columns - 8 && help != ''
+			call s:highlight('Comment', 'StartifySpecial')
+			let help = '    : '.strtrans(help)
+			let help = s:slimit(help, columns - next, next)
+			echon help
+		endif
+		echon "\n"
+	endfor
+	call s:highlight('Comment', 'StartifySelect')
+	" echohl None
+	echon padding. "press (space to quit): "
+	echohl None
+endfunc
+
+
+"----------------------------------------------------------------------
+" show menu info and select one
+"----------------------------------------------------------------------
+function! s:bottom_popup(items, header)
+	" store options
+	let [lz, ch, ut] = [&lz, &ch, &ut]
+	set nolazyredraw
+	set ut=100000000
+
+	" display items
+	call s:bottom_render(a:items, a:header)
+
+	" wait for input
+	try
+		let c = getchar()
+	catch
+		let c = ''
+	endtry
+
+	" restore options
+	let [&lz, &ch, &ut] = [lz, ch, ut]
+
+	return c
+endfunc
+
 
 "----------------------------------------------------------------------
 " testing case
@@ -611,8 +784,11 @@ if 0
 	call quickmenu#append('text1', '')
 	call quickmenu#append('text2', '')
 
-	nnoremap <F12> :call quickmenu#toggle(0)<cr>
+	" nnoremap <F12> :call quickmenu#toggle(0)<cr>
+	imap <expr> <F11> quickmenu#bottom(0)
 endif
+
+
 
 
 

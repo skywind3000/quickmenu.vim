@@ -134,6 +134,14 @@ function quickmenu#current(menuid)
 
 If current menu changed (which is 0 by default), `quickmenu#append()` will insert new items into the new menu and `quickmenu#reset()` will clear items in it either.
 
+#### Popup quickmenu on the bottom (cmdline)
+
+```VimL
+function quickmenu#bottom(menuid)
+```
+
+Use cmdline to show quickmenu.
+
 ## Options
 
 #### g:quickmenu_padding_left (integer)
@@ -250,6 +258,7 @@ Using quickmenu to select snippets is much easier for me than using UltiSnips di
 
 ## History
 
+- 1.2.0 (2017-07-16): new feature `quickmenu#bottom` to popup on the bottom. 
 - 1.1.16 (2017-07-15): improve unicode character support
 - 1.1.15 (2017-07-15): fixed: quickmenu will always popup on the right, no matter `splitright` is set or unset.
 - 1.1.14 (2017-07-14): fixed: incompatible with vim before 7.4.2202
