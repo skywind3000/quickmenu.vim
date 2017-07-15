@@ -42,7 +42,7 @@ endif
 let s:quickmenu_items = {}
 let s:quickmenu_mid = 0
 let s:quickmenu_header = {}
-let s:quickmenu_version = 'QuickMenu 1.1.15'
+let s:quickmenu_version = 'QuickMenu 1.1.16'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
 
@@ -216,7 +216,7 @@ function! quickmenu#toggle(mid) abort
 		for outline in hr
 			let text = outline['text']
 			if strlen(text) > maxsize
-				let maxsize = strlen(text)
+				let maxsize = strdisplaywidth(text)
 			endif
 		endfor
 		let content += hr
@@ -535,20 +535,54 @@ endfunc
 
 
 "----------------------------------------------------------------------
+" string limit
+"----------------------------------------------------------------------
+function! s:slimit(text, limit, col)
+	if a:limit <= 1
+		return ""
+	endif
+	let size = strdisplaywidth(a:text, a:col)
+	if size < a:limit
+		return a:text
+	endif
+	if strlen(a:text) == size || has('patch-7.4.2000') == 0
+		return strpart(a:text, 0, a:limit - 1)
+	endif
+	let text = strcharpart(a:text, 0, a:limit)
+	let size = strchars(text)
+	while 1
+		if strdisplaywidth(text, a:col) < a:limit
+			return text
+		endif
+		let step = size / 8
+		let test = size - step
+		if step > 3 && test > 16
+			let demo = strcharpart(text, 0, test)
+			if strdisplaywidth(demo, a:col) > a:limit
+				let text = demo
+				let size = test
+				continue
+			endif
+		endif
+		let size = size - 1
+		let text = strcharpart(text, 0, size)
+	endwhile
+endfunc
+
+
+"----------------------------------------------------------------------
 " show cmd message
 "----------------------------------------------------------------------
 function! s:cmdmsg(content, highlight)
     let wincols = &columns
-    let allowedheight = &lines/5
     let statusline = (&laststatus==1 && winnr('$')>1) || (&laststatus==2)
     let reqspaces_lastline = (statusline || !&ruler) ? 12 : 29
-    let width = len(a:content)
+    let width = strdisplaywidth(a:content)
     let limit = wincols - reqspaces_lastline
-	let allowedheight = &cmdheight
 	let l:content = a:content
-	if width + 1 > limit
-		let l:content = strpart(l:content, 0, limit - 1)
-		let width = len(l:content)
+	if width >= limit
+		let l:content = s:slimit(l:content, limit, 0)
+		let width = strdisplaywidth(l:content)
 	endif
 	if a:highlight != ''
 		exec "echohl ". a:highlight
