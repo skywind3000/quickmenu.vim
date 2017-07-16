@@ -588,6 +588,7 @@ function! s:cmdmsg(content, highlight)
 		let l:content = s:slimit(l:content, limit, 0)
 		let width = strdisplaywidth(l:content)
 	endif
+	redraw
 	if a:highlight != ''
 		exec "echohl ". a:highlight
 		echo l:content
