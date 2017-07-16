@@ -258,6 +258,7 @@ Using quickmenu to select snippets is much easier for me than using UltiSnips di
 
 ## History
 
+- 1.2.1 (2017-07-16): use redraw to clear help text in the cmdline after quickmenu closed.
 - 1.2.0 (2017-07-16): new feature `quickmenu#bottom` to popup on the bottom. 
 - 1.1.16 (2017-07-15): improve unicode character support
 - 1.1.15 (2017-07-15): fixed: quickmenu will always popup on the right, no matter `splitright` is set or unset.

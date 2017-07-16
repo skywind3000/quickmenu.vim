@@ -3,7 +3,7 @@
 " quickmenu.vim - 
 "
 " Created by skywind on 2017/07/08
-" Last change: 2017-07-16 03:14
+" Last change: 2017-07-16 14:32
 "
 "======================================================================
 
@@ -42,7 +42,7 @@ endif
 let s:quickmenu_items = {}
 let s:quickmenu_mid = 0
 let s:quickmenu_header = {}
-let s:quickmenu_version = 'QuickMenu 1.2.0'
+let s:quickmenu_version = 'QuickMenu 1.2.1'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
 
@@ -66,13 +66,13 @@ function! s:window_close()
 		if bufname('%') == s:quickmenu_name
 			silent close!
 			let s:quickmenu_bid = -1
-			return 0
 		endif
 	endif
 	if s:quickmenu_bid > 0 && bufexists(s:quickmenu_bid)
 		silent exec 'bwipeout ' . s:quickmenu_bid
 		let s:quickmenu_bid = -1
 	endif
+	redraw | echo "" | redraw
 endfunc
 
 function! s:window_open(size)
@@ -388,7 +388,7 @@ function! <SID>quickmenu_execute(index) abort
 	endif
 	let s:quickmenu_line = a:index + 2
 	close!
-	redraw
+	redraw | echo "" | redraw
 	if item.key != '0'
 		let script = item.event
 		if script[0] != '='
@@ -684,6 +684,9 @@ function! quickmenu#bottom(mid)
 
 	let item = get(keymap, cc, {})
 
+	echo ""
+	redraw
+
 	if empty(item)
 		return ""
 	endif
@@ -736,8 +739,7 @@ function! s:bottom_render(items, header)
 		echon "\n"
 	endfor
 	call s:highlight('Comment', 'StartifySelect')
-	" echohl None
-	echon padding. "press (space to quit): "
+	echon padding. "press (space to exit): "
 	echohl None
 endfunc
 
@@ -763,6 +765,9 @@ function! s:bottom_popup(items, header)
 
 	" restore options
 	let [&lz, &ch, &ut] = [lz, ch, ut]
+
+	" remove old echos
+	redraw
 
 	return c
 endfunc
