@@ -3,7 +3,7 @@
 " quickmenu.vim - 
 "
 " Created by skywind on 2017/07/08
-" Last change: 2017-07-16 14:32
+" Last change: 2017-07-17 14:27
 "
 "======================================================================
 
@@ -42,7 +42,7 @@ endif
 let s:quickmenu_items = {}
 let s:quickmenu_mid = 0
 let s:quickmenu_header = {}
-let s:quickmenu_version = 'QuickMenu 1.2.1'
+let s:quickmenu_version = 'QuickMenu 1.2.2'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
 
@@ -288,8 +288,8 @@ function! s:setup_keymaps(items)
 		endif
 		let ln += 1
 	endfor
-	noremap <silent> <buffer> 0 :close<cr>
-	noremap <silent> <buffer> q :close<cr>
+	noremap <silent> <buffer> 0 :call <SID>quickmenu_close()<cr>
+	noremap <silent> <buffer> q :call <SID>quickmenu_close()<cr>
 	noremap <silent> <buffer> <CR> :call <SID>quickmenu_enter()<cr>
 	" let s:quickmenu_line = 0
 	if s:quickmenu_line > 0
@@ -358,6 +358,15 @@ function! s:set_cursor() abort
 		endif
 		echohl None
 	endif
+endfunc
+
+
+"----------------------------------------------------------------------
+" close quickmenu
+"----------------------------------------------------------------------
+function! <SID>quickmenu_close()
+	close
+	redraw | echo "" | redraw
 endfunc
 
 
