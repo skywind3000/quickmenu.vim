@@ -42,6 +42,7 @@ endif
 let s:quickmenu_items = {}
 let s:quickmenu_mid = 0
 let s:quickmenu_header = {}
+let s:quickmenu_cursor = {}
 let s:quickmenu_version = 'QuickMenu 1.2.2'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
@@ -122,6 +123,7 @@ endfunc
 function! quickmenu#reset()
 	let s:quickmenu_items[s:quickmenu_mid] = []
 	let s:quickmenu_line = 0
+	let s:quickmenu_cursor[s:quickmenu_mid] = 0
 endfunc
 
 function! quickmenu#append(text, event, ...)
@@ -225,7 +227,7 @@ function! quickmenu#toggle(mid) abort
 
 	if 1
 		call s:window_open(maxsize)
-		call s:window_render(content)
+		call s:window_render(content, a:mid)
 		call s:setup_keymaps(content)
 	else
 		for item in content
@@ -242,10 +244,11 @@ endfunc
 "----------------------------------------------------------------------
 " render text
 "----------------------------------------------------------------------
-function! s:window_render(items) abort
+function! s:window_render(items, mid) abort
 	setlocal modifiable
 	let ln = 2
 	let b:quickmenu = {}
+	let b:quickmenu.mid = a:mid
 	let b:quickmenu.padding_size = g:quickmenu_padding_left
 	let b:quickmenu.option_lines = []
 	let b:quickmenu.section_lines = []
@@ -281,6 +284,8 @@ endfunc
 "----------------------------------------------------------------------
 function! s:setup_keymaps(items)
 	let ln = 0
+	let mid = b:quickmenu.mid
+	let cursor_pos = get(s:quickmenu_cursor, mid, 0)
 	for item in a:items
 		if item.key != ''
 			let cmd = ' :call <SID>quickmenu_execute('.ln.')<cr>'
@@ -291,9 +296,9 @@ function! s:setup_keymaps(items)
 	noremap <silent> <buffer> 0 :call <SID>quickmenu_close()<cr>
 	noremap <silent> <buffer> q :call <SID>quickmenu_close()<cr>
 	noremap <silent> <buffer> <CR> :call <SID>quickmenu_enter()<cr>
-	" let s:quickmenu_line = 0
-	if s:quickmenu_line > 0
-		call cursor(s:quickmenu_line, 1)
+	let s:quickmenu_line = 0
+	if cursor_pos > 0
+		call cursor(cursor_pos, 1)
 	endif
 	let b:quickmenu.showhelp = 0
 	call s:set_cursor()
@@ -396,6 +401,7 @@ function! <SID>quickmenu_execute(index) abort
 		return
 	endif
 	let s:quickmenu_line = a:index + 2
+	let s:quickmenu_cursor[b:quickmenu.mid] = s:quickmenu_line
 	close!
 	redraw | echo "" | redraw
 	if item.key != '0'
