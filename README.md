@@ -271,6 +271,8 @@ Using quickmenu to select snippets is much easier for me than using UltiSnips di
 
 Thanks to [vim-startify](https://github.com/mhinz/vim-startify), quickmenu uses its syntax and some idea. 
 
-It is a great honor if you like it and star this repository or vote it in: http://www.vim.org/scripts/script.php?script_id=5589 
+It is a great honor if you like it and star this repository or vote it in: [script #5589](http://www.vim.org/scripts/script.php?script_id=5589).
+
+If you are interested in this plugin you may also like [AsyncRun](https://github.com/skywind3000/asyncrun.vim).
 
 
