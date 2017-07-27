@@ -3,7 +3,7 @@
 " quickmenu.vim - 
 "
 " Created by skywind on 2017/07/08
-" Last change: 2017-07-17 14:27
+" Last change: 2017/07/27 16:17:17
 "
 "======================================================================
 
@@ -286,10 +286,14 @@ function! s:setup_keymaps(items)
 	let ln = 0
 	let mid = b:quickmenu.mid
 	let cursor_pos = get(s:quickmenu_cursor, mid, 0)
+	let nowait = ''
+	if v:version >= 704 || (v:version == 703 && has('patch1261'))
+		let nowait = '<nowait>'
+	endif
 	for item in a:items
 		if item.key != ''
 			let cmd = ' :call <SID>quickmenu_execute('.ln.')<cr>'
-			exec "noremap <silent> <buffer> ".item.key. cmd
+			exec "noremap <buffer>".nowait."<silent> ".item.key. cmd
 		endif
 		let ln += 1
 	endfor
@@ -419,7 +423,7 @@ endfunc
 " select items by &ft, generate keymap and add some default items
 "----------------------------------------------------------------------
 function! s:select_by_ft(mid, ft) abort
-	let hint = '123456789abcdefhlmnoprstuvwxyzACDIOPQRSUX*'
+	let hint = '123456789abcdefhilmnoprstuvwxyzACDIOPQRSUX*'
 	" let hint = '12abcdefhlmnoprstuvwxyz*'
 	let items = []
 	let index = 0
