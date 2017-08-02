@@ -131,10 +131,10 @@ function! quickmenu#append(text, event, ...)
 	let filetype = (a:0 >= 2)? a:2 : ''
 	let weight = (a:0 >= 3)? a:3 : 0
 	let item = {}
+	let item.key = (a:0 >= 4)?a:4:''
 	let item.mode = 0
 	let item.event = a:event
 	let item.text = a:text
-	let item.key = ''
 	let item.ft = []
 	let item.weight = weight
 	let item.help = help
@@ -448,7 +448,9 @@ function! s:select_by_ft(mid, ft) abort
 		let lastmode = item.mode
 		" allocate key for non-filetype specific items
 		if item.mode == 0 && len(item.ft) == 0
-			let item.key = hint[index]
+			if item.key == ''
+				let item.key = hint[index]
+			endif
 			let index += 1
 			if index >= strlen(hint)
 				let index = strlen(hint) - 1
@@ -464,7 +466,9 @@ function! s:select_by_ft(mid, ft) abort
 	" allocate key for filetype specific items
 	for item in items
 		if item.mode == 0 && len(item.ft) > 0
-			let item.key = hint[index]
+			if item.key == ''
+				let item.key = hint[index]
+			endif
 			let index += 1
 			if index >= strlen(hint)
 				let index = strlen(hint) - 1
