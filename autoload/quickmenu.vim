@@ -51,6 +51,15 @@ let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
 let s:quickmenu_custom_keys = {}
 
+if g:quickmenu_special_keys == 1
+	" Prevent user to bind special keys
+	let s:quickmenu_custom_keys['g']=1
+	let s:quickmenu_custom_keys['G']=1
+	let s:quickmenu_custom_keys['j']=1
+	let s:quickmenu_custom_keys['k']=1
+	let s:quickmenu_custom_keys['q']=1
+endif
+
 "----------------------------------------------------------------------
 " popup window management
 "----------------------------------------------------------------------
@@ -134,6 +143,7 @@ function! quickmenu#append(text, event, ...)
 	let filetype = (a:0 >= 2)? a:2 : ''
 	let weight = (a:0 >= 3)? a:3 : 0
 	let item = {}
+	let item.key = ''
 	if a:0 >= 4
 		if has_key(s:quickmenu_custom_keys, a:4)
 			call s:errmsg("Quickmenu: Found duplicate binding for key ".a:4)
@@ -141,9 +151,7 @@ function! quickmenu#append(text, event, ...)
 			let item.key = a:4
 			let s:quickmenu_custom_keys[a:4]=1
 		endif
-	else
-		let item.key = ''
-	endif
+    endif
 	let item.mode = 0
 	let item.event = a:event
 	let item.text = a:text
@@ -361,9 +369,7 @@ function! s:set_cursor() abort
 		let find = select - 2
 	endif
 	if find < 0
-		echohl ErrorMsg
-		echo "fatal error in set_cursor() ".find
-		echohl None
+		call s:errmsg("fatal error in set_cursor() ".find)
 		return 
 	endif
 	let s:quickmenu_line = find + 2
