@@ -35,6 +35,9 @@ if !exists('g:quickmenu_options')
 	let g:quickmenu_options = ''
 endif
 
+if !exists('g:quickmenu_special_keys')
+	let g:quickmenu_special_keys = 1
+endif
 
 "----------------------------------------------------------------------
 " Internal State
@@ -46,7 +49,7 @@ let s:quickmenu_cursor = {}
 let s:quickmenu_version = 'QuickMenu 1.2.2'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
-
+let s:quickmenu_custom_keys = {}
 
 "----------------------------------------------------------------------
 " popup window management
@@ -131,7 +134,16 @@ function! quickmenu#append(text, event, ...)
 	let filetype = (a:0 >= 2)? a:2 : ''
 	let weight = (a:0 >= 3)? a:3 : 0
 	let item = {}
-	let item.key = (a:0 >= 4)?a:4:''
+	if a:0 >= 4
+		if has_key(s:quickmenu_custom_keys, a:4)
+			call s:errmsg("Quickmenu: Found duplicate binding for key ".a:4)
+		else
+			let item.key = a:4
+			let s:quickmenu_custom_keys[a:4]=1
+		endif
+	else
+		let item.key = ''
+	endif
 	let item.mode = 0
 	let item.event = a:event
 	let item.text = a:text
@@ -222,7 +234,7 @@ function! quickmenu#toggle(mid) abort
 		endfor
 		let content += hr
 	endfor
-	
+
 	let maxsize += g:quickmenu_padding_right
 
 	if 1
