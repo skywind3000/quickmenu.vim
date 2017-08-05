@@ -51,14 +51,19 @@ let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
 let s:quickmenu_custom_keys = {}
 
-if g:quickmenu_special_keys == 1
-	" Prevent user to bind special keys
-	let s:quickmenu_custom_keys['g']=1
-	let s:quickmenu_custom_keys['G']=1
-	let s:quickmenu_custom_keys['j']=1
-	let s:quickmenu_custom_keys['k']=1
-	let s:quickmenu_custom_keys['q']=1
-endif
+function! s:reset_key_map()
+    let s:quickmenu_custom_keys = {}
+	if g:quickmenu_special_keys == 1
+		" Prevent user to bind special keys
+		let s:quickmenu_custom_keys['g']=1
+		let s:quickmenu_custom_keys['G']=1
+		let s:quickmenu_custom_keys['j']=1
+		let s:quickmenu_custom_keys['k']=1
+		let s:quickmenu_custom_keys['q']=1
+	endif
+endfunction
+
+call s:reset_key_map()
 
 "----------------------------------------------------------------------
 " popup window management
@@ -136,6 +141,7 @@ function! quickmenu#reset()
 	let s:quickmenu_items[s:quickmenu_mid] = []
 	let s:quickmenu_line = 0
 	let s:quickmenu_cursor[s:quickmenu_mid] = 0
+	call s:reset_key_map()
 endfunc
 
 function! quickmenu#append(text, event, ...)
@@ -191,6 +197,7 @@ endfunc
 
 function! quickmenu#current(mid)
 	let s:quickmenu_mid = a:mid
+	call s:reset_key_map()
 endfunc
 
 
@@ -467,11 +474,15 @@ function! s:select_by_ft(mid, ft) abort
 		" allocate key for non-filetype specific items
 		if item.mode == 0 && len(item.ft) == 0
 			if item.key == ''
+				" Avdoid to remap existing key
+				while has_key(s:quickmenu_custom_keys, hint[index]) && index < strlen(hint)-1
+					let index += 1
+				endwhile
 				let item.key = hint[index]
-			endif
-			let index += 1
-			if index >= strlen(hint)
-				let index = strlen(hint) - 1
+				let index += 1
+				if index >= strlen(hint)
+					let index = strlen(hint) - 1
+				endif
 			endif
 		endif
 		let items += [item]
@@ -485,11 +496,15 @@ function! s:select_by_ft(mid, ft) abort
 	for item in items
 		if item.mode == 0 && len(item.ft) > 0
 			if item.key == ''
+				" Avdoid to remap existing key
+				while has_key(s:quickmenu_custom_keys, hint[index]) && index < strlen(hint)-1
+					let index += 1
+				endwhile
 				let item.key = hint[index]
-			endif
-			let index += 1
-			if index >= strlen(hint)
-				let index = strlen(hint) - 1
+				let index += 1
+				if index >= strlen(hint)
+					let index = strlen(hint) - 1
+				endif
 			endif
 		endif
 	endfor
