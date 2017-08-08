@@ -250,6 +250,10 @@ call quickmenu#append("Function List", "TagbarToggle", "Switch Tagbar on/off")
 
 ```
 
+For more advanced usage, you can see my own config:
+
+https://github.com/skywind3000/vim/blob/master/asc/menu.vim
+
 ## More
 
 UltiSnips is great, but remembering all the snipet's names is really painful. There are more nearly 130+ snippets for C++ in UltiSnips's database, but I can remember only three of them. 
