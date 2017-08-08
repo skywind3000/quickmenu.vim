@@ -250,7 +250,7 @@ call quickmenu#append("Function List", "TagbarToggle", "Switch Tagbar on/off")
 
 ```
 
-For more advanced usage, you can see my own config:
+For more advanced usage, you may be interested in my own config:
 
 https://github.com/skywind3000/vim/blob/master/asc/menu.vim
 
