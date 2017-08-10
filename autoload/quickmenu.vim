@@ -3,9 +3,11 @@
 " quickmenu.vim - 
 "
 " Created by skywind on 2017/07/08
-" Last change: 2017/07/27 16:17:17
+" Last change: 2017/08/08 15:20:20
 "
 "======================================================================
+
+" vim: set noet fenc=utf-8 ff=unix sts=4 sw=4 ts=4 :
 
 
 "----------------------------------------------------------------------
@@ -46,7 +48,7 @@ let s:quickmenu_items = {}
 let s:quickmenu_mid = 0
 let s:quickmenu_header = {}
 let s:quickmenu_cursor = {}
-let s:quickmenu_version = 'QuickMenu 1.2.2'
+let s:quickmenu_version = 'QuickMenu 1.3.4'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
 let s:quickmenu_custom_keys = {}
@@ -434,11 +436,14 @@ function! <SID>quickmenu_execute(index) abort
 	close!
 	redraw | echo "" | redraw
 	if item.key != '0'
-		let script = item.event
-		if script[0] != '='
-			exec script
-		else
-			let script = matchstr(script, '^=\s*\zs.*')
+		if type(item.event) == 1
+			if item.event[0] != '='
+				exec item.event
+			else
+				let script = matchstr(item.event, '^=\s*\zs.*')
+			endif
+		elseif type(item.event) == 2
+			call item.event()
 		endif
 	endif
 endfunc
@@ -748,11 +753,15 @@ function! quickmenu#bottom(mid)
 		return ""
 	endif
 
-	if item.event[0] != '='
-		exec item.event
-	else
-		let script = matchstr(item.event, '^=\zs.*')
-		return script
+	if type(item.event) == 1
+		if item.event[0] != '='
+			exec item.event
+		else
+			let script = matchstr(item.event, '^=\zs.*')
+			return script
+		endif
+	elseif type(item.event) == 2
+		return item.event()
 	endif
 
 	return ""
@@ -786,7 +795,10 @@ function! s:bottom_render(items, header)
 		let text = s:slimit(item.text, columns - start, start)
 		echon text
 		let next = start + strdisplaywidth(text)
-		let help = (item.help != '')? item.help : item.event
+		let help = item.help
+		if help == '' && type(item.event) == 1
+			let help = item.event
+		endif
 		if next < columns - 8 && help != ''
 			call s:highlight('Comment', 'StartifySpecial')
 			let help = '    : '.strtrans(help)
