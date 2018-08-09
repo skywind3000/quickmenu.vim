@@ -34,12 +34,15 @@ let g:quickmenu_options = "HL"
 Simply use the function below:
 
 ```VimL
-function quickmenu#append(text, action [, help = ''])
+function quickmenu#append(text, action [, help = ''][, ft = ''][, weight = 0][, key = ''])
 ```
 
 - `text` will be show in the quickmenu, vimscript in `%{...}` will be evaluated and expanded.
 - `action` is a piece of vimscript to be executed when a item is selected.
 - `help` will display in the cmdline if g:quickmenu_options contains `H`.
+- 'ft' will filter this item only for matching filetypes
+- 'weight' menu items will be sorted according to the weight
+- 'key' use this key as shortcut if not already assigned
 
 A item will be treated as "static text" (unselectable) If `action` is empty. `text` starting with "#" represents a new section.
 
