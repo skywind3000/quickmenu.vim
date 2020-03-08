@@ -16,6 +16,10 @@ Just see this GIF demonstration below:
 
 Trying to share my configuration to my friends, I found that they did't have patience to remember all the keymaps in my vimrc, but a quickmenu is quite accaptable for them. 
 
+**Note**: Active development on this plugin has stopped. The only future changes will be bug fixes.
+
+Please see [vim-quickui](https://github.com/skywind3000/vim-quickui).
+
 
 ## Install
 
