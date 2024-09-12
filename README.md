@@ -12,7 +12,7 @@ There are many keymaps defined in my `.vimrc`. Getting tired to check my `.vimrc
 
 Just see this GIF demonstration below:
 
-![](http://skywind3000.github.io/word/images/menu/menu-5.gif)
+![](https://skywind3000.github.io/images/p/quickmenu/menu-5.gif)
 
 Trying to share my configuration to my friends, I found that they did't have patience to remember all the keymaps in my vimrc, but a quickmenu is quite accaptable for them. 
 
@@ -78,7 +78,7 @@ call g:quickmenu#append('item 2.4', 'echo "2.4 is selected"', 'select item 2.4')
 
 And then quickmenu is ready:
 
-![](http://skywind3000.github.io/word/images/menu/menu-6.gif)
+![](https://skywind3000.github.io/images/p/quickmenu/menu-6.gif)
 
 Vim is lack of basic ui components, that's ok for experienced users, but hard for the others. A quickmenu is quite easier for them. Now we have this cute menu and show/hide it with F12. and no longer have to worry about  forgetting keymaps.
 
