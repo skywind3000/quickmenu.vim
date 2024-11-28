@@ -37,7 +37,6 @@ if !exists('g:quickmenu_options')
 	let g:quickmenu_options = ''
 endif
 
-
 "----------------------------------------------------------------------
 " Internal State
 "----------------------------------------------------------------------
@@ -48,7 +47,7 @@ let s:quickmenu_cursor = {}
 let s:quickmenu_version = 'QuickMenu 1.3.4'
 let s:quickmenu_name = '[quickmenu]'
 let s:quickmenu_line = 0
-
+let s:quickmenu_custom_keys = {}
 
 "----------------------------------------------------------------------
 " popup window management
@@ -133,13 +132,21 @@ function! quickmenu#append(text, event, ...)
 	let filetype = (a:0 >= 2)? a:2 : ''
 	let weight = (a:0 >= 3)? a:3 : 0
 	let item = {}
+
 	let item.mode = 0
 	let item.event = a:event
 	let item.text = a:text
+
 	let item.key = ''
-	let item.ft = []
+	if a:0 >= 4
+		let item.key = a:4
+		" all used keys for this panel
+		let s:quickmenu_custom_keys[a:4]=1
+	endif
+
 	let item.weight = weight
 	let item.help = help
+
 	if a:event != ''
 		let item.mode = 0
 	elseif a:text[0] != '#'
@@ -148,9 +155,12 @@ function! quickmenu#append(text, event, ...)
 		let item.mode = 2
 		let item.text = matchstr(a:text, '^#\+\s*\zs.*')
 	endif
+
+	let item.ft = []
 	for ft in split(filetype, ',')
 		let item.ft += [substitute(ft, '^\s*\(.\{-}\)\s*$', '\1', '')]
 	endfor
+
 	let index = -1
 	if !has_key(s:quickmenu_items, s:quickmenu_mid)
 		let s:quickmenu_items[s:quickmenu_mid] = []
@@ -224,7 +234,7 @@ function! quickmenu#toggle(mid) abort
 		endfor
 		let content += hr
 	endfor
-	
+
 	let maxsize += g:quickmenu_padding_right
 
 	if 1
@@ -351,9 +361,7 @@ function! s:set_cursor() abort
 		let find = select - 2
 	endif
 	if find < 0
-		echohl ErrorMsg
-		echo "fatal error in set_cursor() ".find
-		echohl None
+		call s:start_error_message("Quickmenu: fatal error in set_cursor() ".find)
 		return 
 	endif
 	let s:quickmenu_line = find + 2
@@ -428,6 +436,7 @@ endfunc
 " select items by &ft, generate keymap and add some default items
 "----------------------------------------------------------------------
 function! s:select_by_ft(mid, ft) abort
+   let duplicate_key_check = {}
 	let hint = '123456789abcdefhilmnoprstuvwxyzACDIOPQRSUX*'
 	" let hint = '12abcdefhlmnoprstuvwxyz*'
 	let items = []
@@ -453,11 +462,23 @@ function! s:select_by_ft(mid, ft) abort
 		let lastmode = item.mode
 		" allocate key for non-filetype specific items
 		if item.mode == 0 && len(item.ft) == 0
-			let item.key = hint[index]
-			let index += 1
-			if index >= strlen(hint)
-				let index = strlen(hint) - 1
+			" discard already used mapping
+			if has_key(duplicate_key_check, item.key)
+				call s:run_error_message("Quickmenu: duplicate mapping for ".item.key)
+				let item.key = ''
 			endif
+			if item.key == ''
+				" Avdoid to remap already used mapping
+				while has_key(duplicate_key_check, hint[index]) && index < strlen(hint)-1
+					let index += 1
+				endwhile
+				let item.key = hint[index]
+				let index += 1
+				if index >= strlen(hint)
+					let index = strlen(hint) - 1
+				endif
+			endif
+			let duplicate_key_check[item.key] = 1
 		endif
 		let items += [item]
 		if item.mode == 2 
@@ -469,11 +490,24 @@ function! s:select_by_ft(mid, ft) abort
 	" allocate key for filetype specific items
 	for item in items
 		if item.mode == 0 && len(item.ft) > 0
-			let item.key = hint[index]
-			let index += 1
-			if index >= strlen(hint)
-				let index = strlen(hint) - 1
+			" discard already used mapping
+			if has_key(duplicate_key_check, item.key)
+				call s:run_error_message("Quickmenu: duplicate mapping for ".item.key)
+				let item.key = ''
 			endif
+			if item.key == ''
+				" Avdoid to remap already used mapping
+				while has_key(duplicate_key_check, hint[index]) && index < strlen(hint)-1
+					let index += 1
+				endwhile
+				let item.key = hint[index]
+				let index += 1
+				if index >= strlen(hint)
+					let index = strlen(hint) - 1
+				endif
+			endif
+			" keep all used keys
+			let duplicate_key_check[item.key] = 1
 		endif
 	endfor
 	if len(items)
@@ -626,10 +660,14 @@ endfunc
 "----------------------------------------------------------------------
 " echo a error msg
 "----------------------------------------------------------------------
-function! s:errmsg(msg)
+function! s:start_error_message(msg)
 	echohl ErrorMsg
 	echo a:msg
 	echohl None
+endfunc
+
+function! s:run_error_message(msg)
+	echom a:msg
 endfunc
 
 
